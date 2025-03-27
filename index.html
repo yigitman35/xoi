@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hrweb AI Asistanı Xoi Hizmetinizde...</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --hrweb-blue: #421fae;
+            --hrweb-green: #28A745;
+            --hrweb-light: #F8F9FA;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffffff 0%, #f1f4f7 100%);
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin: 20px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--hrweb-blue);
+        }
+
+        .logo {
+            width: 43px;
+            height: 50px;
+            margin-right: 15px;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        /* Robot Logo Animation States */
+        .logo.excited {
+            animation: excited 1s ease 4;
+        }
+        
+        .logo.happy {
+            animation: happy 1.5s ease 4;
+        }
+        
+        .logo.sad {
+            animation: sad 2s ease 4;
+        }
+        
+        .logo.confused {
+            animation: confused 2s ease 4;
+        }
+        
+        .logo.thinking {
+            animation: thinking 1.5s ease 4;
+        }
+        
+        .logo.surprised {
+            animation: surprised 0.8s ease;
+        }
+        
+        .logo.angry {
+            animation: angry 0.8s ease 4;
+        }
+        
+        .logo.laughing {
+            animation: laughing 0.5s ease 4;
+        }
+        
+        .logo.nervous {
+            animation: nervous 0.5s ease 4;
+        }
+        
+        .logo.sleeping {
+            animation: sleeping 3s ease 4;
+        }
+        
+        .logo.waving {
+            animation: waving 1s ease 4;
+        }
+        
+        /* Animation Keyframes */
+        @keyframes excited {
+            0%, 100% { transform: translateY(0) scale(1); }
+            25% { transform: translateY(-5px) scale(1.1); }
+            50% { transform: translateY(0) scale(1); }
+            75% { transform: translateY(-5px) scale(1.1); }
+        }
+        
+        @keyframes happy {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(5deg) scale(1.05); }
+        }
+        
+        @keyframes sad {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(3px) rotate(-3deg); }
+        }
+        
+        @keyframes confused {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+        
+        @keyframes thinking {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(-2px) rotate(-2deg); }
+            75% { transform: translateX(2px) rotate(2deg); }
+        }
+        
+        @keyframes surprised {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes angry {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(-3px) rotate(-2deg); }
+            75% { transform: translateX(3px) rotate(2deg); }
+        }
+        
+        @keyframes laughing {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-2px) scale(1.05); }
+        }
+        
+        @keyframes nervous {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+            20%, 40%, 60%, 80% { transform: translateX(2px); }
+        }
+        
+        @keyframes sleeping {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(2px) rotate(3deg); }
+        }
+        
+        @keyframes waving {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+
+        .chat-title {
+            color: var(--hrweb-blue);
+            font-weight: 700;
+            font-size: 1.8rem;
+            letter-spacing: -0.5px;
+        }
+
+        .chat-box {
+            height: 60vh;
+            min-height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            background: var(--hrweb-light);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 12px 16px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            max-width: 80%;
+            animation: fadeIn 0.3s ease-in;
+            position: relative;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .user-message {
+            background: var(--hrweb-blue);
+            color: white;
+            margin-left: auto;
+            box-shadow: 0 2px 8px rgba(66, 31, 174, 0.2);
+        }
+
+        .ai-message {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            margin-right: auto;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding-left: 30px;
+        }
+
+        .typing-indicator {
+            display: inline-flex;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            align-items: center;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            margin: 0 3px;
+            background: #ddd;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-8px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group { transition: all 0.3s ease; }
+        .input-group:focus-within { transform: translateY(-2px); }
+
+        .btn-primary {
+            background: var(--hrweb-blue);
+            border: none;
+            padding: 8px 20px;
+        }
+
+        .btn-primary:hover { background: #153d6b; }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <img id="robot-logo" class="logo excited" src="https://i.imgur.com/R71qkMV.png" alt="HRWeb AI Logo" />
+            <h1 class="chat-title">Hrweb AI Asistanı</h1>
+        </div>
+        
+        <div class="chat-box" id="chat-box">
+            <div class="message ai-message">
+                Merhaba! Ben Xoi 👋  Size nasıl yardımcı olabilirim?
+            </div>
+        </div>
+        
+        <div class="input-group">
+            <input type="text" class="form-control" id="message-input" 
+                   placeholder="Mesajınızı buraya yazın..." 
+                   onkeydown="handleEnter(event)">
+            <button class="btn btn-primary" onclick="sendMessage()">
+                Gönder
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const webhookUrl = "https://yigitman.app.n8n.cloud/webhook/hrweb";
+        let isWaitingResponse = false;
+        const robotLogo = document.getElementById("robot-logo");
+        
+        // Emotion states for the robot
+        const emotions = [
+            "excited", "happy", "sad", "confused", "thinking", 
+            "surprised", "angry", "laughing", "nervous", "sleeping", "waving"
+        ];
+        
+        // Set initial excited animation when page loads
+        document.addEventListener("DOMContentLoaded", function() {
+            setRobotEmotion("excited");
+        });
+        
+        // Function to set robot emotion by removing all emotion classes and adding the new one
+        function setRobotEmotion(emotion) {
+            emotions.forEach(e => robotLogo.classList.remove(e));
+            robotLogo.classList.add(emotion);
+        }
+        
+        // Function to analyze text and determine appropriate emotion
+        function analyzeTextForEmotion(text) {
+            text = text.toLowerCase();
+            
+            // mutlu animasyonu
+            if (text.includes("teşekkür") || 
+                text.includes("harika") || 
+                text.includes("mükemmel") || 
+                text.includes("😊") || 
+                text.includes("👍") || 
+                text.includes("😄") ||
+                text.includes("mutlu")) {
+                return "happy";
+            }
+            
+            // üzgün animasyonu
+            if (text.includes("üzgünüm") || 
+                text.includes("maalesef") || 
+                text.includes("bilmiyorum") || 
+                text.includes("yapamıyorum") || 
+                text.includes("😔") || 
+                text.includes("😢") ||
+                text.includes("üzücü")) {
+                return "sad";
+            }
+            
+            // kafası karışmış animasyonu
+            if (text.includes("anlamadım") || 
+                text.includes("ne demek istiyorsunuz") || 
+                text.includes("açıklayabilir misiniz") || 
+                text.includes("kesin bir bilgi veremiyorum") || 
+                text.includes("🤔") ||
+                text.includes("karmaşık")) {
+                return "confused";
+            }
+            
+            // düşünme animasyonu
+            if (text.includes("düşüneyim") || 
+                text.includes("araştırayım") || 
+                text.includes("bakayım") ||
+                text.includes("inceleyeyim")) {
+                return "thinking";
+            }
+            
+            // şaşırma animasyonu
+            if (text.includes("vay") || 
+                text.includes("gerçekten mi") || 
+                text.includes("inanılmaz") || 
+                text.includes("😮") || 
+                text.includes("😲") ||
+                text.includes("şaşırtıcı")) {
+                return "surprised";
+            }
+            
+            // kızmış animasyonu
+            if (text.includes("hata") || 
+                text.includes("yanlış") || 
+                text.includes("olmadı") || 
+                text.includes("😠") ||
+                text.includes("kızgın")) {
+                return "angry";
+            }
+            
+            // gülme animasyonu
+            if (text.includes("😂") || 
+                text.includes("🤣") || 
+                text.includes("komik") || 
+                text.includes("gülmek") ||
+                text.includes("espri")) {
+                return "laughing";
+            }
+            
+            // gergin animasyonu
+            if (text.includes("endişe") || 
+                text.includes("stres") || 
+                text.includes("gergin") || 
+                text.includes("😰") ||
+                text.includes("tedirgin")) {
+                return "nervous";
+            }
+            
+            // uyuma animasyoonu
+            if (text.includes("bekle") || 
+                text.includes("sonra") || 
+                text.includes("uyku") || 
+                text.includes("dinlen")) {
+                return "sleeping";
+            }
+            
+            // tanışma animasyonu
+            if (text.includes("merhaba") || 
+                text.includes("selam") || 
+                text.includes("hoşgeldin") || 
+                text.includes("👋")) {
+                return "waving";
+            }
+            
+            // Belirli bir duygu algılanmazsa varsayılan olarak mutlu animasyonu gelecek
+            return "happy";
+        }
+
+        function sendMessage() {
+            if (isWaitingResponse) return;
+            
+            const input = document.getElementById("message-input");
+            const message = input.value.trim();
+            if (!message) return;
+            
+            addMessage(message, "user-message");
+            input.value = "";
+            showTypingIndicator();
+            isWaitingResponse = true;
+            
+            // Yanıt beklerken düşünme animasyonunu ayarlandı
+            setRobotEmotion("thinking");
+            
+            fetch(webhookUrl, {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "session-id": generateSessionId()
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const aiResponse = data.response || "Şu anda cevap veremiyorum. Lütfen daha sonra tekrar deneyin.";
+                addMessage(aiResponse, "ai-message");
+                
+                // Analyze the AI response and set appropriate emotion
+                const emotion = analyzeTextForEmotion(aiResponse);
+                setRobotEmotion(emotion);
+            })
+            .catch(error => {
+                addMessage("Bağlantı hatası oluştu: " + error.message, "ai-message");
+                setRobotEmotion("sad"); // Show sad emotion on error
+            })
+            .finally(() => {
+                removeTypingIndicator();
+                isWaitingResponse = false;
+            });
+        }
+
+        function addMessage(text, className) {
+            const chatBox = document.getElementById("chat-box");
+            const div = document.createElement("div");
+            div.className = `message ${className}`;
+            div.innerHTML = text.replace(/\n/g, "<br>");
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function generateSessionId() {
+            return 'oturum-' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function handleEnter(event) {
+            if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function showTypingIndicator() {
+            const chatBox = document.getElementById("chat-box");
+            const typingDiv = document.createElement("div");
+            typingDiv.className = "typing-indicator";
+            typingDiv.innerHTML = ` 
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            `;
+            chatBox.appendChild(typingDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typingIndicators = document.querySelectorAll(".typing-indicator");
+            typingIndicators.forEach(indicator => indicator.remove());
+        }
+    </script>
+</body>
+</html>
